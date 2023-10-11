@@ -5,6 +5,8 @@ const { Server } = require("socket.io");
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 
+const app = express();
+
 const os = require("os");
 const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
@@ -37,9 +39,12 @@ async function main() {
     );
   `);
 
-  const app = express();
   const server = createServer(app);
   const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
     connectionStateRecovery: {},
     // set up the adapter on each worker thread
     adapter: createAdapter(),
@@ -49,9 +54,17 @@ async function main() {
     res.sendFile(join(__dirname, "index.html"));
   });
 
-  // [...]
+  //users go live logic
+  const liveUsers = []; // Een array om de live gebruikers bij te houden
+
+  //
 
   io.on("connection", async (socket) => {
+    socket.on("user live", (username) => {
+      liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
+      io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
+    });
+
     socket.on("chat message", async (msg, clientOffset, callback) => {
       let result;
       try {
