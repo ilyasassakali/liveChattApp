@@ -6,10 +6,12 @@ import App from "./App.vue";
 
 import LiveUsers from "./views/LiveUsers.vue";
 import Home from "./views/Home.vue";
+import Chat from "./views/Chat.vue";
 
 const routes = [
   { path: "/", component: Home },
   { path: "/liveUsers", component: LiveUsers },
+  { path: "/chat/:roomName", name: "room", component: Chat },
 ];
 
 const router = createRouter({

@@ -33,14 +33,8 @@ async function main() {
     adapter: createAdapter(),
   });
 
-  app.get("/", (req, res) => {
-    res.sendFile(join(__dirname, "index.html"));
-  });
-
   //users go live logic
   const liveUsers = []; // Een array om de live gebruikers bij te houden
-
-  //
 
   io.on("connection", async (socket) => {
     /*users logic*/
@@ -59,9 +53,8 @@ async function main() {
     });
 
     /*message logic*/
-    socket.on("chat message", async (msg) => {
-      let result;
-      io.emit("chat message", msg);
+    socket.on("chat message", async (msg, targetRoom, user) => {
+      io.to(targetRoom).emit("chat message", msg, user, targetRoom);
     });
   });
 

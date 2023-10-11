@@ -22,12 +22,15 @@ export default {
     return {
       username: "",
       usernameExists: false, // New data property to track if the username already exists
+      currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
   },
   methods: {
     goLive() {
         const username = this.username;
         if (username.trim() !== "") { // Ensure username is not empty
+        this.currentUser = username; // Définissez currentUser avec le nom de l'utilisateur
+        sessionStorage.setItem('currentUser', username); // Ajouter cette ligne pour stocker le nom d'utilisateur
         socket.emit("check username", username, (exists) => {
           if (!exists) {
             this.usernameExists = false; // Reset the usernameExists flag
