@@ -1,12 +1,15 @@
 <template>
     <div>
         <h1>ChatApp</h1>
-    <p>Enter username to create or join Room and chat with them!</p>
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">@</span>
-      <input v-model="username" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-      <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
-    </div>
+        <p>Enter username to create or join a Room and chat with them!</p>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" >@</span>
+            <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
+        </div>
+        <div class="alert alert-warning" role="alert" v-if="usernameExists">
+            Username already taken! Use another username.
+        </div>
     </div>
 </template>
 
@@ -17,24 +20,28 @@ const socket = io("http://localhost:3000");
 export default {
   data() {
     return {
-      username: "", // Voeg dit toe aan de data om de gebruikersnaam bij te houden
-      //liveUsers: [], // Voeg liveUsers toe
-      //rooms: [] // Voeg rooms toe als lege array
+      username: "",
+      usernameExists: false, // New data property to track if the username already exists
     };
   },
   methods: {
     goLive() {
-        // Step 2: Send the username to the server
         const username = this.username;
-        socket.emit("user live", username);
-        this.$router.push('/liveUsers'); // Navigate to liveUsers page
+        if (username.trim() !== "") { // Ensure username is not empty
+        socket.emit("check username", username, (exists) => {
+          if (!exists) {
+            this.usernameExists = false; // Reset the usernameExists flag
+            socket.emit("user live", username);
+            this.$router.push('/liveUsers'); // Navigate to liveUsers page
+          } else {
+            this.usernameExists = true; // Set usernameExists flag if the username already exists
+          }
+        });
+      }
     },
-  },
-  mounted() {
   }
 };
 </script>
 
 <style >
-
 </style>

@@ -1,11 +1,9 @@
 <template>
     <div>
-      <h1>Live Users</h1>
-   
-      <ul>
-        <li v-for="(user, index) in liveUsers" :key="index">{{ user }}</li>
-      </ul>
-    
+        <h1>Live Users</h1>
+        <ul>
+          <li v-for="(user, index) in liveUsers" :key="index">{{ user }}</li>
+        </ul>
     </div>
   </template>
   
@@ -20,6 +18,9 @@ export default {
     };
   },
   mounted() {
+    // Request the list of live users when the component mounts
+    socket.emit('get live users');
+    
     // Step 4: Receive the list of live users from the server
     socket.on("update live users", (liveUsers) => {
       this.liveUsers = liveUsers;

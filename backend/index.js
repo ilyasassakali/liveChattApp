@@ -2,8 +2,6 @@ const express = require("express");
 const { createServer } = require("node:http");
 const { join } = require("node:path");
 const { Server } = require("socket.io");
-const sqlite3 = require("sqlite3");
-const { open } = require("sqlite");
 
 const app = express();
 
@@ -24,21 +22,6 @@ if (cluster.isPrimary) {
 }
 
 async function main() {
-  // open the database file
-  const db = await open({
-    filename: "chat.db",
-    driver: sqlite3.Database,
-  });
-
-  // create our 'messages' table (you can ignore the 'client_offset' column for now)
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        client_offset TEXT UNIQUE,
-        content TEXT
-    );
-  `);
-
   const server = createServer(app);
   const io = new Server(server, {
     cors: {
@@ -60,46 +43,26 @@ async function main() {
   //
 
   io.on("connection", async (socket) => {
+    /*users logic*/
     socket.on("user live", (username) => {
       liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
       io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
     });
 
-    socket.on("chat message", async (msg, clientOffset, callback) => {
-      let result;
-      try {
-        result = await db.run(
-          "INSERT INTO messages (content, client_offset) VALUES (?, ?)",
-          msg,
-          clientOffset
-        );
-      } catch (e) {
-        if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
-          // the message was already inserted, so we notify the client
-          callback();
-        } else {
-          // nothing to do, just let the client retry
-        }
-        return;
-      }
-      io.emit("chat message", msg, result.lastID);
-      // acknowledge the event
-      callback();
+    socket.on("check username", (username, callback) => {
+      const usernameExists = liveUsers.includes(username);
+      callback(usernameExists);
     });
 
-    if (!socket.recovered) {
-      try {
-        await db.each(
-          "SELECT id, content FROM messages WHERE id > ?",
-          [socket.handshake.auth.serverOffset || 0],
-          (_err, row) => {
-            socket.emit("chat message", row.content, row.id);
-          }
-        );
-      } catch (e) {
-        // something went wrong
-      }
-    }
+    socket.on("get live users", () => {
+      io.emit("update live users", liveUsers); // Envoyer la liste des utilisateurs en direct à tous les clients
+    });
+
+    /*message logic*/
+    socket.on("chat message", async (msg) => {
+      let result;
+      io.emit("chat message", msg);
+    });
   });
 
   const port = process.env.PORT;
