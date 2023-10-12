@@ -1,94 +1,68 @@
 <template>
-  <div>
+  
     <h1>Chat Room: {{ roomName }}</h1>
-    <div v-for="message in messages" :key="message.id">
-      <b>{{ message.user }}:</b> {{ message.text }}
+    <div class="list-container">
+      <div v-for="message in messages" :key="message.id">
+        <b>{{ message.user }}:</b> {{ message.text }}
+      </div>
     </div>
-    <input v-model="messageInput" @keyup.enter="sendMessage" />
-  </div>
+
+    <div class="input-group mb-3">
+        <input v-model="text" v-on:keyup.enter="sendMessage" type="text" class="form-control" placeholder="Write here a message">
+        <button @click="sendMessage" class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
+    </div>
+ 
+ 
 </template>
 
 <script>
 import io from "socket.io-client";
-const socket = io("http://localhost:3000");
 
 export default {
   data() {
     return {
-      roomName: this.$route.params.roomName,
+      currentUser: sessionStorage.getItem('currentUser') || '',
+      text: "",
       messages: [],
-      messageInput: "",
-      currentUser: sessionStorage.getItem('currentUser') || ''
+      roomName: this.$route.params.roomName,
+      socketInstance: null
     };
   },
-  methods: {
-    sendMessage() {
-      const content = this.messageInput.trim();
-      if (content !== "") {
-        const message = {
-          text: content,
-          user: this.currentUser,
-        };
-        this.messages.push(message);
-        socket.emit("chat message", content, this.roomName, this.currentUser);
-        this.messageInput = "";
-      }
-
-    },
-    updateMessages(content, sender, user) {
-      const message = {
-        text: content,
-        user: sender,
-      };
-      this.messages.push(message);
-    },
-  },
   mounted() {
-    socket.on("chat message", (msg, sender, targetRoom, user) => {
-      if (targetRoom === this.roomName) {
-        this.updateMessages(msg, sender, user);
-      }
-    });
+    this.join(); 
+  },
+  methods: {
+    join() {
+      this.socketInstance = io("http://localhost:3000");
+      this.socketInstance.emit('join', this.roomName);
+      this.socketInstance.on(
+        "message:received", (data) => {
+          this.messages = this.messages.concat(data);
+        }
+      )
+    },
+    sendMessage() {
+      this.addMessage();
+      this.text = "";
+    },
+    addMessage() {
+      const message = {
+        text: this.text,
+        user: this.currentUser,
+      };
+      this.messages = this.messages.concat(message);
+      this.socketInstance.emit('message', message, this.roomName);
+    },
+    
   },
 };
 </script>
 
 <style scoped>
-.parent-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
+.input-group{
   position: fixed;
-  padding-top: 150px;
+  bottom: 10px;
+  width: 80%;
 }
 
-.name-container {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-}
-
-.user-name {
-  height: 30px;
-  font-size: 20px;
-  padding: 5px;
-  margin-bottom: 5px;
-  text-align: center;
-  font-weight: bold;
-  display: block;
-}
-
-.text-input-container {
-  height: 100vh;
-}
-
-.text-message {
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  height: 70px;
-  padding: 10px;
-  box-sizing: border-box;
-}
 </style>

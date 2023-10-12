@@ -53,8 +53,13 @@ async function main() {
     });
 
     /*message logic*/
-    socket.on("chat message", async (msg, targetRoom, user) => {
-      io.to(targetRoom).emit("chat message", msg, user, targetRoom);
+
+    socket.on("message", (data, roomName) => {
+      socket.to(roomName).emit("message:received", data);
+    });
+
+    socket.on("join", (roomName) => {
+      socket.join(roomName);
     });
   });
 

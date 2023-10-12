@@ -32,7 +32,7 @@ export default {
       currentUser: sessionStorage.getItem('currentUser') || '', // Ajouter cette ligne pour récupérer le nom d'utilisateur
       rooms: [
         { name: "Room101" },
-        { name: "PokéCenter" },
+        { name: "Roomtest" },
         // Ajoutez d'autres rooms au besoin
       ]
     };
