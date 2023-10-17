@@ -28,7 +28,7 @@ async function main() {
       origin: "*",
       methods: ["GET", "POST"],
     },
-    //connectionStateRecovery: {},
+    connectionStateRecovery: {},
     // set up the adapter on each worker thread
     adapter: createAdapter(),
   });

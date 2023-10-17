@@ -11,7 +11,7 @@
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <div class="input-group mb-3">
-            <input v-model="newRoomName" type="text" class="form-control" placeholder="Enter roomname" aria-label="roomname" aria-describedby="basic-addon1">
+            <input v-model="newRoomName" @keyup.enter="createAndJoinRoom" type="text" class="form-control" placeholder="Enter roomname" aria-label="roomname" aria-describedby="basic-addon1">
           </div>
           <button class="btn btn-primary" @click="createAndJoinRoom">+ Create and join Room</button>
           </div>
@@ -42,13 +42,6 @@ export default {
       ]
     };
   },
-  created() {
-    /*
-    const currentUser = sessionStorage.getItem('currentUser');
-    if (!currentUser) {
-      this.$router.push('/'); // Rediriger vers la page d'accueil
-    }*/
-  },
   mounted() {
     // Request the list of live users when the component mounts
     socket.emit('get live users');
@@ -57,17 +50,6 @@ export default {
     socket.on("update live users", (liveUsers) => {
       this.liveUsers = liveUsers;
     });
-
-    /*
-      // Listen for user left event
-    socket.on("disconnect", (username) => {
-      const index = liveUsers.indexOf(username);
-      if (index !== -1) {
-        liveUsers.splice(index, 1);
-        io.emit("update live users", liveUsers);
-      }
-    });
-*/
 
   },
   methods: {

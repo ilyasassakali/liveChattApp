@@ -25,24 +25,6 @@ export default {
       currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
   },
-  created() {
-    /*
-    const currentUser = sessionStorage.getItem('currentUser');
-    if (currentUser) {
-      this.$router.push('/liveUsers'); // Rediriger vers la page LiveUsers
-    }*/
-  },
-  /*
-  beforeDestroy() {
-    const username = sessionStorage.getItem('currentUser');
-    if (username) {
-      socket.emit("disconnect", username); // Informer le serveur que l'utilisateur a quitté
-      const index = this.liveUsers.indexOf(username);
-      if (index !== -1) {
-        this.liveUsers.splice(index, 1);
-      }
-    }
-  },*/
   methods: {
     goLive() {
         const username = this.username;
