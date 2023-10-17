@@ -1,23 +1,27 @@
 <template>
     <div>
         <h1>Hello {{ currentUser }}</h1>
-
-
         <h3>Live Users</h3>
         <ul>
           <li v-for="(user, index) in liveUsers" :key="index">
             {{ user }}
           </li>
         </ul>
-
-        <h3>Join Existing Rooms</h3>
+        <h3>Join or Create Room</h3>
+        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+          <div class="card-body">
+            <div class="input-group mb-3">
+            <input v-model="newRoomName" type="text" class="form-control" placeholder="Enter roomname" aria-label="roomname" aria-describedby="basic-addon1">
+          </div>
+          <button class="btn btn-primary" @click="createAndJoinRoom">+ Create and join Room</button>
+          </div>
+        </div>
         <div v-for="(room, index) in rooms" :key="index" class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <h5 class="card-title">{{ room.name }}</h5>
             <button class="btn btn-primary" @click="joinRoom(room.name)">Join Room</button>
           </div>
         </div>
-        
     </div>
   </template>
   
@@ -30,12 +34,20 @@ export default {
     return {
       liveUsers: [], // Voeg liveUsers toe
       currentUser: sessionStorage.getItem('currentUser') || '', // Ajouter cette ligne pour récupérer le nom d'utilisateur
+      newRoomName: '',
       rooms: [
         { name: "Room101" },
         { name: "Roomtest" },
         // Ajoutez d'autres rooms au besoin
       ]
     };
+  },
+  created() {
+    /*
+    const currentUser = sessionStorage.getItem('currentUser');
+    if (!currentUser) {
+      this.$router.push('/'); // Rediriger vers la page d'accueil
+    }*/
   },
   mounted() {
     // Request the list of live users when the component mounts
@@ -45,11 +57,34 @@ export default {
     socket.on("update live users", (liveUsers) => {
       this.liveUsers = liveUsers;
     });
+
+    /*
+      // Listen for user left event
+    socket.on("disconnect", (username) => {
+      const index = liveUsers.indexOf(username);
+      if (index !== -1) {
+        liveUsers.splice(index, 1);
+        io.emit("update live users", liveUsers);
+      }
+    });
+*/
+
   },
   methods: {
     joinRoom(roomName) {
       this.$router.push({ name: 'room', params: { roomName } });
     },
+    createAndJoinRoom(){
+        const roomName = this.newRoomName.trim()
+        if (roomName !== "") {
+        // Vérifiez si la salle n'existe pas déjà
+        const roomExists = this.rooms.some(room => room.name === roomName);
+        if (!roomExists) {
+          this.rooms.push({ name: roomName });
+        }
+        this.joinRoom(roomName);
+      }
+    }
   },
 };
   </script>

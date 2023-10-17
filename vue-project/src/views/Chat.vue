@@ -28,6 +28,12 @@ export default {
       socketInstance: null
     };
   },
+  created() {
+    const currentUser = sessionStorage.getItem('currentUser');
+    if (!currentUser) {
+      this.$router.push('/'); // Rediriger vers la page d'accueil
+    }
+  },
   mounted() {
     this.join(); 
   },

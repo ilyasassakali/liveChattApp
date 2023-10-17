@@ -28,7 +28,7 @@ async function main() {
       origin: "*",
       methods: ["GET", "POST"],
     },
-    connectionStateRecovery: {},
+    //connectionStateRecovery: {},
     // set up the adapter on each worker thread
     adapter: createAdapter(),
   });
@@ -39,9 +39,26 @@ async function main() {
   io.on("connection", async (socket) => {
     /*users logic*/
     socket.on("user live", (username) => {
+      socket.username = username; // Attribuer le nom d'utilisateur à la socket
+
       liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
       io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
     });
+
+    socket.on("disconnect", () => {
+      const disconnectedUser = socket.username;
+      console.log("ca c ton disconecteduser: " + disconnectedUser);
+      if (disconnectedUser) {
+        console.log("une deco a ete faite par " + disconnectedUser);
+        const index = liveUsers.indexOf(disconnectedUser);
+        if (index !== -1) {
+          liveUsers.splice(index, 1);
+          io.emit("update live users", liveUsers);
+        }
+      }
+    });
+
+    console.log(liveUsers);
 
     socket.on("check username", (username, callback) => {
       const usernameExists = liveUsers.includes(username);
