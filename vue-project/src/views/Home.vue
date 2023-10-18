@@ -7,9 +7,9 @@
             <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
             <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
         </div>
-        <div class="alert alert-warning" role="alert" v-if="usernameExists">
-            Username already taken! Use another username.
-        </div>
+        <div class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
+    {{ usernameExists ? 'Username already taken! Use another username.' : 'Username is already taken! Use another username.' }}
+  </div>
     </div>
 </template>
 
@@ -22,22 +22,26 @@ export default {
     return {
       username: "",
       usernameExists: false, // New data property to track if the username already exists
+      usernameTaken: false,
+
       currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
   },
   methods: {
     goLive() {
-        const username = this.username;
-        if (username.trim() !== "") { // Ensure username is not empty
-        this.currentUser = username; // Définissez currentUser avec le nom de l'utilisateur
-        sessionStorage.setItem('currentUser', username); // Ajouter cette ligne pour stocker le nom d'utilisateur
+      const username = this.username;
+      if (username.trim() !== "") {
+        this.currentUser = username;
+        sessionStorage.setItem('currentUser', username);
         socket.emit("check username", username, (exists) => {
           if (!exists) {
-            this.usernameExists = false; // Reset the usernameExists flag
+            this.usernameExists = false;
+            this.usernameTaken = false; // Réinitialiser le drapeau usernameTaken
             socket.emit("user live", username);
-            this.$router.push('/liveUsers'); // Navigate to liveUsers page
+            this.$router.push('/liveUsers');
           } else {
-            this.usernameExists = true; // Set usernameExists flag if the username already exists
+            this.usernameExists = true;
+            this.usernameTaken = false; // Réinitialiser le drapeau usernameTaken
           }
         });
       }

@@ -37,11 +37,6 @@ async function main() {
   const liveUsers = []; // Een array om de live gebruikers bij te houden
 
   io.on("connection", async (socket) => {
-    socket.on("check username", (username, callback) => {
-      const usernameExists = liveUsers.includes(username);
-      callback(usernameExists);
-    });
-
     socket.on("get live users", () => {
       io.emit("update live users", liveUsers); // Envoyer la liste des utilisateurs en direct à tous les clients
     });
@@ -57,17 +52,28 @@ async function main() {
     });
 
     /*users logic*/
-    /*socket.on("user live", (username) => {
-      socket.username = username; // Attribuer le nom d'utilisateur à la socket
 
-      liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
-      io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
-    });*/
+    socket.on("check username", (username, callback) => {
+      const usernameExists = liveUsers.some(user => user.username === username);
+      callback(usernameExists);
+    });
 
     socket.on("user live", (data) => {
       const { username, room } = data;
       socket.username = username;
       socket.room = room;
+
+
+      const userExists = liveUsers.some(user => user.username === username);
+
+      if (!userExists) {
+        liveUsers.push({ username, room });
+        io.emit("update live users", liveUsers);
+      } else {
+        // Envoyer un message d'erreur au client pour lui dire que le nom d'utilisateur est déjà pris
+        socket.emit("username taken");
+      }
+
 
       const userIndex = liveUsers.findIndex(
         (user) => user.username === username
