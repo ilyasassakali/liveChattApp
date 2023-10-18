@@ -1,18 +1,21 @@
 <template>
     <div>
         <h1>Hello {{ currentUser }}</h1>
+
+        <!--
         
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
-
         <div class="card-body">
           <h3>Live Users</h3>
           <ul style="margin-bottom: 10px;" class="list-group">
             <li v-for="(user, index) in liveUsers" :key="index" class="list-group-item">
-              {{ user }}
+              {{ user.username }}
             </li>
           </ul>
         </div>
-      </div>
+      </div>-->
+
+
         <h3>Join or Create Room</h3>
         <!--
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
@@ -28,11 +31,13 @@
           <div class="card-body">
             <h5 class="card-title">{{ room.name }}</h5>
               <ul style="margin-bottom: 10px;" class="list-group">
-                <li v-for="(user, index) in liveUsers" :key="index" class="list-group-item">{{ user }}</li>
+                <li v-for="(user, index) in getLiveUsersByRoom(room.name)" :key="index" class="list-group-item">{{ user.username }}</li>
               </ul>
             <button class="btn btn-primary" @click="joinRoom(room.name)">Join Room</button>
           </div>
         </div>
+
+
     </div>
   </template>
   
@@ -65,6 +70,13 @@ export default {
   },
   methods: {
     joinRoom(roomName) {
+      const username = this.currentUser;
+
+      // Supprimer l'ancienne entrée de l'utilisateur de liveUsers
+      this.liveUsers = this.liveUsers.filter(user => user.username !== username);
+
+
+      socket.emit('user live', { username, room: roomName });
       this.$router.push({ name: 'room', params: { roomName } });
     },
     createAndJoinRoom(){
@@ -77,6 +89,9 @@ export default {
         }
         this.joinRoom(roomName);
       }
+    },
+    getLiveUsersByRoom(roomName) {
+      return this.liveUsers.filter(user => user.room === roomName);
     }
   },
 };

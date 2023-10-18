@@ -37,29 +37,6 @@ async function main() {
   const liveUsers = []; // Een array om de live gebruikers bij te houden
 
   io.on("connection", async (socket) => {
-    /*users logic*/
-    socket.on("user live", (username) => {
-      socket.username = username; // Attribuer le nom d'utilisateur à la socket
-
-      liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
-      io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
-    });
-
-    socket.on("disconnect", () => {
-      const disconnectedUser = socket.username;
-      console.log("ca c ton disconecteduser: " + disconnectedUser);
-      if (disconnectedUser) {
-        console.log("une deco a ete faite par " + disconnectedUser);
-        const index = liveUsers.indexOf(disconnectedUser);
-        if (index !== -1) {
-          liveUsers.splice(index, 1);
-          io.emit("update live users", liveUsers);
-        }
-      }
-    });
-
-    console.log(liveUsers);
-
     socket.on("check username", (username, callback) => {
       const usernameExists = liveUsers.includes(username);
       callback(usernameExists);
@@ -78,6 +55,50 @@ async function main() {
     socket.on("join", (roomName) => {
       socket.join(roomName);
     });
+
+    /*users logic*/
+    /*socket.on("user live", (username) => {
+      socket.username = username; // Attribuer le nom d'utilisateur à la socket
+
+      liveUsers.push(username); // Voeg de gebruiker toe aan de lijst van live gebruikers
+      io.emit("update live users", liveUsers); // Stuur de bijgewerkte lijst naar alle clients
+    });*/
+
+    socket.on("user live", (data) => {
+      const { username, room } = data;
+      socket.username = username;
+      socket.room = room;
+
+      const userIndex = liveUsers.findIndex(
+        (user) => user.username === username
+      );
+
+      if (userIndex !== -1) {
+        liveUsers[userIndex].room = room; // Mettez à jour la salle de l'utilisateur
+      } else {
+        liveUsers.push({ username, room }); // Ajoutez l'utilisateur s'il n'existe pas
+      }
+
+      io.emit("update live users", liveUsers);
+    });
+
+    socket.on("disconnect", () => {
+      const disconnectedUser = socket.username;
+      const room = socket.room;
+      if (disconnectedUser) {
+        const index = liveUsers.findIndex(
+          (user) => user.username === disconnectedUser && user.room === room
+        );
+        if (index !== -1) {
+          liveUsers.splice(index, 1);
+          io.emit("update live users", liveUsers);
+        }
+      }
+      io.emit("update live users", liveUsers);
+      console.log(liveUsers);
+    });
+
+    console.log(liveUsers);
   });
 
   const port = process.env.PORT;
