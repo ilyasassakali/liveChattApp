@@ -1,13 +1,20 @@
 <template>
     <div>
         <h1>Hello {{ currentUser }}</h1>
-        <h3>Live Users</h3>
-        <ul>
-          <li v-for="(user, index) in liveUsers" :key="index">
-            {{ user }}
-          </li>
-        </ul>
+        
+        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+
+        <div class="card-body">
+          <h3>Live Users</h3>
+          <ul style="margin-bottom: 10px;" class="list-group">
+            <li v-for="(user, index) in liveUsers" :key="index" class="list-group-item">
+              {{ user }}
+            </li>
+          </ul>
+        </div>
+      </div>
         <h3>Join or Create Room</h3>
+        <!--
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <div class="input-group mb-3">
@@ -15,10 +22,14 @@
           </div>
           <button class="btn btn-primary" @click="createAndJoinRoom">+ Create and join Room</button>
           </div>
-        </div>
+        </div>-->
+
         <div v-for="(room, index) in rooms" :key="index" class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <h5 class="card-title">{{ room.name }}</h5>
+              <ul style="margin-bottom: 10px;" class="list-group">
+                <li v-for="(user, index) in liveUsers" :key="index" class="list-group-item">{{ user }}</li>
+              </ul>
             <button class="btn btn-primary" @click="joinRoom(room.name)">Join Room</button>
           </div>
         </div>
