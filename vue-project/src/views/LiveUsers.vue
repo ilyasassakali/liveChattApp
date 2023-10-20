@@ -17,7 +17,7 @@
 
 
         <h3>Join or Create Room</h3>
-        <!--
+        
         <div class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <div class="input-group mb-3">
@@ -25,9 +25,9 @@
           </div>
           <button class="btn btn-primary" @click="createAndJoinRoom">+ Create and join Room</button>
           </div>
-        </div>-->
+        </div>
 
-        <div v-for="(room, index) in rooms" :key="index" class="card" style="width: 18rem; margin-bottom: 20px;">
+        <div v-for="(room, index) in liveRooms" :key="index" class="card" style="width: 18rem; margin-bottom: 20px;">
           <div class="card-body">
             <h5 class="card-title">{{ room.name }}</h5>
               <ul style="margin-bottom: 10px;" class="list-group">
@@ -51,11 +51,7 @@ export default {
       liveUsers: [], // Voeg liveUsers toe
       currentUser: sessionStorage.getItem('currentUser') || '', // Ajouter cette ligne pour récupérer le nom d'utilisateur
       newRoomName: '',
-      rooms: [
-        { name: "Room101" },
-        { name: "Roomtest" },
-        // Ajoutez d'autres rooms au besoin
-      ]
+      liveRooms: []
     };
   },
   mounted() {
@@ -65,6 +61,11 @@ export default {
     // Step 4: Receive the list of live users from the server
     socket.on("update live users", (liveUsers) => {
       this.liveUsers = liveUsers;
+    });
+
+    // Écoutez les mises à jour en direct des salles
+    socket.on("update live rooms", (liveRooms) => {
+      this.liveRooms = liveRooms;
     });
 
   },
@@ -83,9 +84,9 @@ export default {
         const roomName = this.newRoomName.trim()
         if (roomName !== "") {
         // Vérifiez si la salle n'existe pas déjà
-        const roomExists = this.rooms.some(room => room.name === roomName);
+        const roomExists = this.liveRooms.some(room => room.name === roomName);
         if (!roomExists) {
-          this.rooms.push({ name: roomName });
+          this.liveRooms.push({ name: roomName });
         }
         this.joinRoom(roomName);
       }

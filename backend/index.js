@@ -35,10 +35,12 @@ async function main() {
 
   //users go live logic
   const liveUsers = []; // Een array om de live gebruikers bij te houden
+  const liveRooms = [];
 
   io.on("connection", async (socket) => {
     socket.on("get live users", () => {
       io.emit("update live users", liveUsers); // Envoyer la liste des utilisateurs en direct à tous les clients
+      io.emit("update live rooms", liveRooms);
     });
 
     /*message logic*/
@@ -54,7 +56,9 @@ async function main() {
     /*users logic*/
 
     socket.on("check username", (username, callback) => {
-      const usernameExists = liveUsers.some(user => user.username === username);
+      const usernameExists = liveUsers.some(
+        (user) => user.username === username
+      );
       callback(usernameExists);
     });
 
@@ -63,8 +67,7 @@ async function main() {
       socket.username = username;
       socket.room = room;
 
-
-      const userExists = liveUsers.some(user => user.username === username);
+      const userExists = liveUsers.some((user) => user.username === username);
 
       if (!userExists) {
         liveUsers.push({ username, room });
@@ -74,6 +77,14 @@ async function main() {
         socket.emit("username taken");
       }
 
+      const roomExists = liveRooms.some(
+        (existingRoom) => existingRoom.name === room
+      );
+
+      if (!roomExists) {
+        liveRooms.push({ name: room });
+        io.emit("update live rooms", liveRooms);
+      }
 
       const userIndex = liveUsers.findIndex(
         (user) => user.username === username
@@ -86,6 +97,7 @@ async function main() {
       }
 
       io.emit("update live users", liveUsers);
+      io.emit("update live rooms", liveRooms);
     });
 
     socket.on("disconnect", () => {
@@ -101,10 +113,12 @@ async function main() {
         }
       }
       io.emit("update live users", liveUsers);
+      io.emit("update live rooms", liveRooms);
+
       console.log(liveUsers);
     });
 
-    console.log(liveUsers);
+    io.emit("update live rooms", liveRooms);
   });
 
   const port = process.env.PORT;
