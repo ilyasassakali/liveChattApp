@@ -64,40 +64,46 @@ async function main() {
 
     socket.on("user live", (data) => {
       const { username, room } = data;
-      socket.username = username;
-      socket.room = room;
 
-      const userExists = liveUsers.some((user) => user.username === username);
+      if (username !== undefined && room !== undefined) {
+        socket.username = username;
+        socket.room = room;
 
+        const userExists = liveUsers.some((user) => user.username === username);
+
+        /*
       if (!userExists) {
         liveUsers.push({ username, room });
         io.emit("update live users", liveUsers);
       } else {
         // Envoyer un message d'erreur au client pour lui dire que le nom d'utilisateur est déjà pris
         socket.emit("username taken");
-      }
+      }*/
 
-      const roomExists = liveRooms.some(
-        (existingRoom) => existingRoom.name === room
-      );
+        const roomExists = liveRooms.some(
+          (existingRoom) => existingRoom.name === room
+        );
 
-      if (!roomExists) {
-        liveRooms.push({ name: room });
+        if (!roomExists) {
+          liveRooms.push({ name: room });
+          io.emit("update live rooms", liveRooms);
+        }
+
+        const userIndex = liveUsers.findIndex(
+          (user) => user.username === username
+        );
+
+        if (userIndex !== -1) {
+          liveUsers[userIndex].room = room; // Mettez à jour la salle de l'utilisateur
+        } else {
+          liveUsers.push({ username, room }); // Ajoutez l'utilisateur s'il n'existe pas
+        }
+
+        console.log("frer: " + username);
+
+        io.emit("update live users", liveUsers);
         io.emit("update live rooms", liveRooms);
       }
-
-      const userIndex = liveUsers.findIndex(
-        (user) => user.username === username
-      );
-
-      if (userIndex !== -1) {
-        liveUsers[userIndex].room = room; // Mettez à jour la salle de l'utilisateur
-      } else {
-        liveUsers.push({ username, room }); // Ajoutez l'utilisateur s'il n'existe pas
-      }
-
-      io.emit("update live users", liveUsers);
-      io.emit("update live rooms", liveRooms);
     });
 
     socket.on("disconnect", () => {
@@ -114,11 +120,10 @@ async function main() {
       }
       io.emit("update live users", liveUsers);
       io.emit("update live rooms", liveRooms);
-
-      console.log(liveUsers);
     });
-
     io.emit("update live rooms", liveRooms);
+
+    console.log(liveUsers);
   });
 
   const port = process.env.PORT;
