@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     join() {
-      this.socketInstance = io("https://live-chatt-app-backend-dmdqyvqu0-ilyasassakalis-projects.vercel.app/");
+      this.socketInstance = io.connect("https://live-chatt-app-backend-dmdqyvqu0-ilyasassakalis-projects.vercel.app/");
       this.socketInstance.emit('join', this.roomName);
       this.socketInstance.on(
         "message:received", (data) => {
