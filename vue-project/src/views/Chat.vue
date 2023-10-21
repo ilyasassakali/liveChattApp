@@ -19,6 +19,14 @@
 
 <script>
 import io from "socket.io-client";
+const io = new Server(server, {
+    cors: {
+      origin: "*",
+    },
+    connectionStateRecovery: {},
+    // set up the adapter on each worker thread
+    adapter: createAdapter(),
+  });
 
 export default {
   data() {
