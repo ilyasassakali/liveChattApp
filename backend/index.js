@@ -26,7 +26,6 @@ async function main() {
   const io = new Server(server, {
     cors: {
       origin: "*",
-      methods: ["GET", "POST"],
     },
     connectionStateRecovery: {},
     // set up the adapter on each worker thread
