@@ -1,15 +1,16 @@
 <template>
-    <div>
-        <h1>ChatApp</h1>
-        <p>Enter username to create or join a Room and chat with them!</p>
+    <div class="center-content">
+      <div class="home-content">
+              <h1>ChatApp</h1>
+              <p>Enter username to create or join a Room and chat with them!</p>
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1" >@</span>
-            <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-            <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
+                  <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                  <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
+              </div>
+              <div class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
+          {{ usernameExists ? 'Username already taken! Use another username.' : 'Username is already taken! Use another username.' }}
         </div>
-        <div class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
-    {{ usernameExists ? 'Username already taken! Use another username.' : 'Username is already taken! Use another username.' }}
-  </div>
+      </div>
     </div>
 </template>
 
@@ -23,7 +24,6 @@ export default {
       username: "",
       usernameExists: false, // New data property to track if the username already exists
       usernameTaken: false,
-
       currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
   },
@@ -34,6 +34,7 @@ export default {
         this.currentUser = username;
         sessionStorage.setItem('currentUser', username);
         socket.emit("check username", username, (exists) => {
+
           if (!exists) {
             this.usernameExists = false;
             this.usernameTaken = false; // Réinitialiser le drapeau usernameTaken
@@ -50,5 +51,19 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
+
+.center-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; 
+}
+
+.home-content {
+  text-align: center;
+  margin: 20px;
+}
+
 </style>

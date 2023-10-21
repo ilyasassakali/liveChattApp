@@ -56,6 +56,8 @@ async function main() {
     /*users logic*/
 
     socket.on("check username", (username, callback) => {
+      console.log("ijo: " + username);
+      console.log("tout ca : " + liveUsers);
       const usernameExists = liveUsers.some(
         (user) => user.username === username
       );
@@ -69,16 +71,16 @@ async function main() {
         socket.username = username;
         socket.room = room;
 
-        const userExists = liveUsers.some((user) => user.username === username);
-
         /*
-      if (!userExists) {
-        liveUsers.push({ username, room });
-        io.emit("update live users", liveUsers);
-      } else {
-        // Envoyer un message d'erreur au client pour lui dire que le nom d'utilisateur est déjà pris
-        socket.emit("username taken");
-      }*/
+          const userExists = liveUsers.some((user) => user.username === username);
+        if (!userExists) {
+          liveUsers.push({ username, room });
+          io.emit("update live users", liveUsers);
+        } else {
+          // Envoyer un message d'erreur au client pour lui dire que le nom d'utilisateur est déjà pris
+          socket.emit("username taken");
+        }
+        */
 
         const roomExists = liveRooms.some(
           (existingRoom) => existingRoom.name === room
@@ -98,8 +100,6 @@ async function main() {
         } else {
           liveUsers.push({ username, room }); // Ajoutez l'utilisateur s'il n'existe pas
         }
-
-        console.log("frer: " + username);
 
         io.emit("update live users", liveUsers);
         io.emit("update live rooms", liveRooms);
@@ -129,7 +129,7 @@ async function main() {
   const port = process.env.PORT;
 
   server.listen(port, () => {
-    console.log(`server running at http://localhost:${port}`);
+    //console.log(`server running at http://localhost:${port}`);
   });
 }
 

@@ -1,11 +1,14 @@
 <template>
-    <div>
+    <div class="center-content">
+      
         <h1>Hello {{ currentUser }}</h1>
 
 
         <h3>Join or Create Room</h3>
-        
-        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+
+      <div class="rooms">
+
+        <div class="card">
           <div class="card-body">
             <div class="input-group mb-3">
             <input v-model="newRoomName" @keyup.enter="createAndJoinRoom" type="text" class="form-control" placeholder="Enter roomname" aria-label="roomname" aria-describedby="basic-addon1">
@@ -14,8 +17,7 @@
           </div>
         </div>
 
-     
-        <div v-for="(room, index) in liveRooms" :key="index" class="card" style="width: 18rem; margin-bottom: 20px;">
+        <div v-for="(room, index) in liveRooms" :key="index" class="card">
           <div class="card-body">
             <h5 class="card-title">{{ room.name }}</h5>
               <ul style="margin-bottom: 10px;" class="list-group">
@@ -24,8 +26,9 @@
             <button class="btn btn-primary" @click="joinRoom(room.name)">Join Room</button>
           </div>
         </div>
-     
 
+      </div>
+    
 
     </div>
   </template>
@@ -88,6 +91,28 @@ export default {
   </script>
   
   <style scoped>
+
+.center-content{
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.rooms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 90%;
+
+}
+
+.card {
+  width: 18rem;
+  margin: 10px;
+}
   
   </style>
   

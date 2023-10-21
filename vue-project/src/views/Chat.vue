@@ -1,7 +1,9 @@
 <template>
   
+  <div class="center-content">
     <h1>Chat Room: {{ roomName }}</h1>
-    <div class="list-container">
+
+    <div class="list-container" ref="listContainer">
       <div v-for="message in messages" :key="message.id">
         <b>{{ message.user }}:</b> {{ message.text }}
       </div>
@@ -12,7 +14,7 @@
         <button @click="sendMessage" class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
     </div>
  
- 
+  </div>
 </template>
 
 <script>
@@ -44,6 +46,7 @@ export default {
       this.socketInstance.on(
         "message:received", (data) => {
           this.messages = this.messages.concat(data);
+          this.scrollToBottom();
         }
       )
     },
@@ -58,6 +61,12 @@ export default {
       };
       this.messages = this.messages.concat(message);
       this.socketInstance.emit('message', message, this.roomName);
+      this.scrollToBottom();
+    },
+    scrollToBottom() {
+    this.$nextTick(() => {
+      this.$refs.listContainer.scrollTop = this.$refs.listContainer.scrollHeight;
+    });
     },
     
   },
@@ -65,6 +74,24 @@ export default {
 </script>
 
 <style scoped>
+
+.center-content{
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+ 
+}
+
+.list-container {
+  height:80vh; 
+  overflow-y: auto; 
+  
+  padding: 10px; 
+}
+
+
 .input-group{
   position: fixed;
   bottom: 10px;
