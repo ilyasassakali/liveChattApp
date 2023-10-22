@@ -21,6 +21,10 @@ if (cluster.isPrimary) {
   return setupPrimary();
 }
 
+app.get("/", (req, res) => {
+  res.json({ success: "true" });
+});
+
 async function main() {
   const server = createServer(app);
   const io = new Server(server, {
