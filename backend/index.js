@@ -10,17 +10,16 @@ const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
-/*
 if (cluster.isPrimary) {
   // create one worker per available core
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork({
-      PORT: 3000 + i,
+      PORT: 8000 + i,
     });
   }
   // set up the adapter on the primary thread
   return setupPrimary();
-}*/
+}
 
 async function main() {
   const server = createServer(app);
