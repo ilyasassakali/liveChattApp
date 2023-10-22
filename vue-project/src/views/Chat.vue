@@ -112,6 +112,12 @@ export default {
   padding: 10px; 
 }
 
+@media screen and (max-width: 768px) {
+  .list-container {
+    height: 60vh; /* Changez la hauteur pour les écrans de téléphone portable */
+  }
+}
+
 
 .input-group{
   position: fixed;

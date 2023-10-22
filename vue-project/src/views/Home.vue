@@ -1,7 +1,10 @@
 <template>
     <div class="center-content">
       <div class="home-content">
-              <h1 >LiveConnectRooms</h1>
+              <div class="live-indicator-container">
+              <div class="live-users-indicator"></div>
+              <h1>LiveConnectRooms</h1>
+            </div>
               <p>Enter username to create or join a Room and chat with people!</p>
         <div class="input-group mb-3">
                   <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
@@ -76,6 +79,31 @@ button:hover{
 .home-content {
   text-align: center;
   margin: 20px;
+}
+
+.live-indicator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-users-indicator {
+  width: 20px;
+  height: 20px;
+  background-color: #5468ff; 
+  border-radius: 50%;
+  animation: blink 1s infinite alternate; 
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0; /* Hide the element at the start */
+  }
+  100% {
+    opacity: 1; /* Show the element at the end */
+  }
 }
 
 </style>
