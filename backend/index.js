@@ -10,6 +10,7 @@ const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
+/*
 if (cluster.isPrimary) {
   // create one worker per available core
   for (let i = 0; i < numCPUs; i++) {
@@ -19,7 +20,7 @@ if (cluster.isPrimary) {
   }
   // set up the adapter on the primary thread
   return setupPrimary();
-}
+}*/
 
 async function main() {
   const server = createServer(app);
@@ -125,7 +126,7 @@ async function main() {
     console.log(liveUsers);
   });
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 8000;
 
   server.listen(port, () => {
     //console.log(`server running at http://localhost:${port}`);
