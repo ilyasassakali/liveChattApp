@@ -127,8 +127,8 @@ async function main() {
 
   const port = process.env.PORT || 8000;
 
-  server.listen("https://live-chatt-app.vercel.app/" + port, () => {
-    //console.log(`server running at http://localhost:${port}`);
+  server.listen(port, () => {
+    console.log(`server running on port ${port}`);
   });
 }
 
