@@ -35,8 +35,7 @@
   
   <script>
 import io from "socket.io-client";
-
-const socket = io.connect("https://live-chatt-app-backend-dmdqyvqu0-ilyasassakalis-projects.vercel.app/");
+const socket = io("http://localhost:3000");
 
 export default {
   data() {

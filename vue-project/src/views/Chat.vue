@@ -20,7 +20,6 @@
 <script>
 import io from "socket.io-client";
 
-
 export default {
   data() {
     return {
@@ -42,7 +41,7 @@ export default {
   },
   methods: {
     join() {
-      this.socketInstance = io.connect("https://live-chatt-app-backend-dmdqyvqu0-ilyasassakalis-projects.vercel.app/");
+      this.socketInstance = io("http://localhost:3000");
       this.socketInstance.emit('join', this.roomName);
       this.socketInstance.on(
         "message:received", (data) => {
