@@ -125,7 +125,7 @@ async function main() {
     console.log(liveUsers);
   });
 
-  const port = process.env.PORT;
+  const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
     //console.log(`server running at http://localhost:${port}`);
