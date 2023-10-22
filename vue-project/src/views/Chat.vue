@@ -1,11 +1,19 @@
 <template>
   
   <div class="center-content">
-    <h1>Chat Room: {{ roomName }}</h1>
+    <h1>Hello {{ currentUser }}</h1>
+    <h2>Welcome to Room: {{ roomName }}</h2>
+
+    <div v-if="liveUsersInRoom.length > 0" class="live-users-container">
+      <div class="live-users-indicator"></div>
+      <div class="live-users-info">
+        <p>{{ liveUsersInRoom.length }} live user(s): {{ liveUsersInRoom.map(user => user.username).join(', ') }}</p>
+      </div>
+    </div>
 
     <div class="list-container" ref="listContainer">
       <div v-for="message in messages" :key="message.id">
-        <b>{{ message.user }}:</b> {{ message.text }}
+        <b>{{ message.user === currentUser ? 'Me' : message.user }}:</b> {{ message.text }}
       </div>
     </div>
 
@@ -28,7 +36,9 @@ export default {
       text: "",
       messages: [],
       roomName: this.$route.params.roomName,
-      socketInstance: null
+      socketInstance: null,
+      liveUsers: [],
+      liveUsersInRoom: [] 
     };
   },
   created() {
@@ -39,6 +49,8 @@ export default {
   },
   mounted() {
     this.join(); 
+    this.getLiveUsers(); // Call this method to get live users
+
   },
   methods: {
     join() {
@@ -52,8 +64,10 @@ export default {
       )
     },
     sendMessage() {
+      if (this.text.trim() !== "") {
       this.addMessage();
       this.text = "";
+      }
     },
     addMessage() {
       const message = {
@@ -69,6 +83,12 @@ export default {
       this.$refs.listContainer.scrollTop = this.$refs.listContainer.scrollHeight;
     });
     },
+    getLiveUsers() {
+      this.socketInstance.emit('get live users');
+      this.socketInstance.on("update live users", (liveUsers) => {
+        this.liveUsersInRoom = liveUsers.filter(user => user.room === this.roomName);
+      });
+    }
     
   },
 };
@@ -86,7 +106,7 @@ export default {
 }
 
 .list-container {
-  height:80vh; 
+  height:70vh; 
   overflow-y: auto; 
   
   padding: 10px; 
@@ -97,6 +117,49 @@ export default {
   position: fixed;
   bottom: 10px;
   width: 80%;
+}
+
+h1,h5{
+    color: #5468ff;
+}
+
+button{
+    background-color: #5468ff;
+    color: white;
+}
+
+button:hover{
+    background-color: #2942ff;
+}
+
+
+.live-users-indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #5468ff; /* You can change the color as needed */
+  border-radius: 50%;
+  animation: blink 1s infinite alternate; /* Define the blink animation */
+  margin-bottom: 5px;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0; /* Hide the element at the start */
+  }
+  100% {
+    opacity: 1; /* Show the element at the end */
+  }
+}
+
+.live-users-container {
+  display: flex;
+  align-items: center;
+}
+
+.live-users-info {
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 5px;
 }
 
 </style>

@@ -2,7 +2,6 @@
     <div class="center-content">
       <div class="home-content">
               <h1 >LiveConnectRooms</h1>
-              <h1 > {{ testText }}</h1>
               <p>Enter username to create or join a Room and chat with people!</p>
         <div class="input-group mb-3">
                   <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
@@ -17,8 +16,6 @@
 
 <script>
 import io from "socket.io-client";
-console.log("show");
-console.log(import.meta.env.VITE_SOCKET_URL);
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 export default {
@@ -27,7 +24,6 @@ export default {
       username: "",
       usernameExists: false, // New data property to track if the username already exists
       usernameTaken: false,
-      testText: import.meta.env.VITE_TEST_NAME,
       currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
   },
@@ -63,6 +59,10 @@ h1{
 
 button{
     background-color: #5468ff;
+}
+
+button:hover{
+    background-color: #2942ff;
 }
 
 .center-content{

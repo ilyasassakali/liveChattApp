@@ -18,13 +18,13 @@
           </div>
         </div>
 
-        <div v-for="(room, index) in liveRooms" :key="index" class="card">
-          <div class="card-body">
+        <div v-for="(room, index) in liveRooms" :key="index" class="card" :class="{ 'has-users': getLiveUsersByRoom(room.name).length > 0 }">
+          <div class="card-body" >
             <h5 class="card-title">{{ room.name }}</h5>
               <ul style="margin-bottom: 10px;" class="list-group">
                 <li v-for="(user, index) in getLiveUsersByRoom(room.name)" :key="index" class="list-group-item">{{ user.username }}</li>
               </ul>
-            <button class="btn btn-primary" @click="joinRoom(room.name)">Join Room</button>
+            <button class="btn btn-primary" @click="joinRoom(room.name)">{{ isUserInRoom(room.name) ? 'Joined Room' : 'Join Room' }}</button>
           </div>
         </div>
 
@@ -44,7 +44,7 @@ export default {
       liveUsers: [], // Voeg liveUsers toe
       currentUser: sessionStorage.getItem('currentUser') || '', // Ajouter cette ligne pour récupérer le nom d'utilisateur
       newRoomName: '',
-      liveRooms: []
+      liveRooms: [],
     };
   },
   mounted() {
@@ -86,7 +86,11 @@ export default {
     },
     getLiveUsersByRoom(roomName) {
       return this.liveUsers.filter(user => user.room === roomName);
-    }
+    },
+    isUserInRoom(roomName) {
+    const username = this.currentUser;
+    return this.getLiveUsersByRoom(roomName).some(user => user.username === username);
+  }
   },
 };
   </script>
@@ -99,6 +103,10 @@ h1,h5{
 
 button{
     background-color: #5468ff;
+}
+
+button:hover{
+    background-color: #2942ff;
 }
 
 .center-content{
@@ -123,6 +131,18 @@ button{
   width: 18rem;
   margin: 10px;
 }
-  
+
+.list-group-item{
+  background-color: transparent;
+  color: white;
+}
+
+.has-users {
+  animation: spin 1.2s infinite linear;
+}
+
+@keyframes spin {
+  20% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
+}
   </style>
   
