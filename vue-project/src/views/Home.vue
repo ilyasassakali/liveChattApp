@@ -1,13 +1,13 @@
 <template>
     <div class="center-content">
       <div class="home-content">
-              <h1>ChatApp</h1>
-              <p>Enter username to create or join a Room and chat with them!</p>
+              <h1 >LiveConnectRooms</h1>
+              <p>Enter username to create or join a Room and chat with people!</p>
         <div class="input-group mb-3">
                   <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                  <button type="button" class="btn btn-success" @click="goLive">Go Live</button>
+                  <button  type="button" class="btn btn-success" @click="goLive">Go Live</button>
               </div>
-              <div class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
+              <div style="background-color: white; color: #5468ff;border: 2px solid #5468ff;" class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
           {{ usernameExists ? 'Username already taken! Use another username.' : 'Username is already taken! Use another username.' }}
         </div>
       </div>
@@ -16,7 +16,7 @@
 
 <script>
 import io from "socket.io-client";
-const socket = io("https://live-chatt-app.vercel.app/");
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 export default {
   data() {
@@ -52,6 +52,14 @@ export default {
 </script>
 
 <style scoped>
+
+h1{
+    color: #5468ff;
+}
+
+button{
+    background-color: #5468ff;
+}
 
 .center-content{
   display: flex;

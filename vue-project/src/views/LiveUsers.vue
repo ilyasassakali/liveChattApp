@@ -10,6 +10,7 @@
 
         <div class="card">
           <div class="card-body">
+            <h5 class="card-title">Your created roomname</h5>
             <div class="input-group mb-3">
             <input v-model="newRoomName" @keyup.enter="createAndJoinRoom" type="text" class="form-control" placeholder="Enter roomname" aria-label="roomname" aria-describedby="basic-addon1">
           </div>
@@ -35,7 +36,7 @@
   
   <script>
 import io from "socket.io-client";
-const socket = io("https://live-chatt-app.vercel.app/");
+const socket = io("http://localhost:3000");
 
 export default {
   data() {
@@ -92,6 +93,14 @@ export default {
   
   <style scoped>
 
+h1,h5{
+    color: #5468ff;
+}
+
+button{
+    background-color: #5468ff;
+}
+
 .center-content{
   margin: 10px;
   display: flex;
@@ -110,6 +119,7 @@ export default {
 }
 
 .card {
+  border: 3px solid #5468ff;
   width: 18rem;
   margin: 10px;
 }

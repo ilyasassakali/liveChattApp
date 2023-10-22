@@ -14,7 +14,7 @@ if (cluster.isPrimary) {
   // create one worker per available core
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork({
-      PORT: 8000 + i,
+      PORT: 3000 + i,
     });
   }
   // set up the adapter on the primary thread
@@ -125,7 +125,7 @@ async function main() {
     console.log(liveUsers);
   });
 
-  const port = process.env.PORT || 8000;
+  const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
     console.log(`server running on port ${port}`);
