@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     join() {
-      this.socketInstance = io("http://localhost:3000");
+      this.socketInstance = io(import.meta.env.VITE_SOCKET_URL);
       this.socketInstance.emit('join', this.roomName);
       this.socketInstance.on(
         "message:received", (data) => {
