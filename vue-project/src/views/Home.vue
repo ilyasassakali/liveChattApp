@@ -1,10 +1,10 @@
 <template>
     <div class="center-content">
-      <div class="home-content">
+            <div class="home-content">
               <div class="live-indicator-container">
-              <div class="live-users-indicator"></div>
-              <h1>LiveConnectRooms</h1>
-            </div>
+                <div class="live-users-indicator"></div>
+                <h1>LiveConnectRooms</h1>
+              </div>
               <p>Enter username to create or join a Room and chat with people!</p>
         <div class="input-group mb-3">
                   <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">

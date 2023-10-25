@@ -9,6 +9,29 @@ const os = require("os");
 const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+mongoose
+  .connect(process.env.DBPASSWORD, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+app.get("/", (req, res) => {
+  res.json({ success: "true" });
+});
+
+//AUTHENTICATION LOGIC
+
+const { registerUser, loginUser } = require("./auth");
+
+app.post("/register", registerUser);
+app.post("/login", loginUser);
+
+//SOCKET LOGIC
 
 if (cluster.isPrimary) {
   // create one worker per available core
@@ -20,10 +43,6 @@ if (cluster.isPrimary) {
   // set up the adapter on the primary thread
   return setupPrimary();
 }
-
-app.get("/", (req, res) => {
-  res.json({ success: "true" });
-});
 
 async function main() {
   const server = createServer(app);
@@ -73,17 +92,6 @@ async function main() {
       if (username !== undefined && room !== undefined) {
         socket.username = username;
         socket.room = room;
-
-        /*
-          const userExists = liveUsers.some((user) => user.username === username);
-        if (!userExists) {
-          liveUsers.push({ username, room });
-          io.emit("update live users", liveUsers);
-        } else {
-          // Envoyer un message d'erreur au client pour lui dire que le nom d'utilisateur est déjà pris
-          socket.emit("username taken");
-        }
-        */
 
         const roomExists = liveRooms.some(
           (existingRoom) => existingRoom.name === room
