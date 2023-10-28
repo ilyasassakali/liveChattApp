@@ -1,4 +1,8 @@
+require("dotenv").config();
 const express = require("express");
+const session = require("express-session");
+const flash = require("express-flash");
+const passport = require("./passport-config");
 const { createServer } = require("node:http");
 const { join } = require("node:path");
 const { Server } = require("socket.io");
@@ -10,7 +14,9 @@ const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 const mongoose = require("mongoose");
-require("dotenv").config();
+const authRoutes = require("./authRoutes"); // Importez les routes d'authentification
+app.use(express.json());
+app.use(flash());
 
 mongoose
   .connect(process.env.DBPASSWORD, {
@@ -24,12 +30,33 @@ app.get("/", (req, res) => {
   res.json({ success: "true" });
 });
 
-//AUTHENTICATION LOGIC
+//AUTHENTICATION, SESSION AND LOGINSYSTEME
 
-const { registerUser, loginUser } = require("./auth");
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60, // Définit la durée de vie de la session à 1 heure (en millisecondes)
+    },
+  })
+);
 
-app.post("/register", registerUser);
-app.post("/login", loginUser);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/", authRoutes);
+
+app.get("/dashboard", passport.authenticate("local"), (req, res) => {
+  // Cette route ne sera accessible que si l'utilisateur est authentifié
+  res.json({ message: "Bienvenue sur le dashboard !" });
+});
+
+app.get("/logout", (req, res) => {
+  req.logout(); // Cela va déclencher la déconnexion et détruire la session
+  res.redirect("/login"); // Vous pouvez rediriger l'utilisateur vers la page de connexion
+});
 
 //SOCKET LOGIC
 

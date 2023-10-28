@@ -9,7 +9,7 @@
             <div class="home-content">
                 <h2>Log In</h2>
                     <div class="input-group mb-3">
-                        <input type="text"  class="form-control" placeholder="Email or Username" aria-label="EmailOrUsername" aria-describedby="basic-addon1">
+                        <input type="text"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <input type="password"  class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">

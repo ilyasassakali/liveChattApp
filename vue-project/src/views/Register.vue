@@ -12,9 +12,6 @@
                         <input type="text"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
-                        <input type="email"  class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
                         <input type="password"  class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
