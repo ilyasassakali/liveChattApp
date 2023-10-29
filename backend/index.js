@@ -48,16 +48,6 @@ app.use(passport.session());
 
 app.use("/", authRoutes);
 
-app.get("/dashboard", passport.authenticate("local"), (req, res) => {
-  // Cette route ne sera accessible que si l'utilisateur est authentifié
-  res.json({ message: "Bienvenue sur le dashboard !" });
-});
-
-app.get("/logout", (req, res) => {
-  req.logout(); // Cela va déclencher la déconnexion et détruire la session
-  res.redirect("/login"); // Vous pouvez rediriger l'utilisateur vers la page de connexion
-});
-
 //SOCKET LOGIC
 
 if (cluster.isPrimary) {

@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import axios from "axios";
 
 import LiveUsers from "./views/LiveUsers.vue";
 import Home from "./views/Home.vue";
@@ -10,6 +11,12 @@ import Chat from "./views/Chat.vue";
 
 import Register from "./views/Register.vue";
 import Login from "./views/Login.vue";
+
+const app = createApp(App);
+
+app.config.globalProperties.$axios = axios.create({
+  baseURL: "http://localhost:3000",
+});
 
 const routes = [
   { path: "/", component: Home },
