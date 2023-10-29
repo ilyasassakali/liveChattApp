@@ -18,7 +18,8 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.json({ success: "true" });
+      console.log("User logged in:", user);
+      return res.json({ success: "true", user });
     });
   })(req, res, next);
 });
@@ -44,6 +45,11 @@ router.post("/register", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Register error" }); // Envoyer un message d'erreur au format JSON
   }
+});
+
+
+router.get("/get-session", (req, res) => {
+  res.json(req.session);
 });
 
 module.exports = router;

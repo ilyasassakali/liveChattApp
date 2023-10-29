@@ -19,9 +19,14 @@ app.config.globalProperties.$axios = axios.create({
 });
 
 const routes = [
-  { path: "/", component: Home },
-  { path: "/liveUsers", component: LiveUsers },
-  { path: "/chat/:roomName", name: "room", component: Chat },
+  { path: "/", component: Home, meta: { requiresAuth: true } },
+  { path: "/liveUsers", component: LiveUsers, meta: { requiresAuth: true } },
+  {
+    path: "/chat/:roomName",
+    name: "room",
+    component: Chat,
+    meta: { requiresAuth: true },
+  },
   { path: "/register", component: Register },
   { path: "/login", component: Login },
 ];
@@ -29,6 +34,20 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!user) {
+      next({ path: "/login" });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 createApp(App).use(router).mount("#app");
