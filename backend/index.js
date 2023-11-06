@@ -38,14 +38,13 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 1000 * 60 * 60, // Définit la durée de vie de la session à 1 heure (en millisecondes)
+      maxAge: 10000 * 60 * 60, //10000 for 10 seconds
     },
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 app.use("/", authRoutes);
 
@@ -96,8 +95,6 @@ async function main() {
     /*users logic*/
 
     socket.on("check username", (username, callback) => {
-      console.log("ijo: " + username);
-      console.log("tout ca : " + liveUsers);
       const usernameExists = liveUsers.some(
         (user) => user.username === username
       );

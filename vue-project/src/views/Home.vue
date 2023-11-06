@@ -5,14 +5,12 @@
                 <div class="live-users-indicator"></div>
                 <h1>LiveConnectRooms</h1>
               </div>
-              <p>Enter username to create or join a Room and chat with people!</p>
+              <p>Go live to create or join a Room and chat with people!</p>
         <div class="input-group mb-3">
-                  <input v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                  <input readonly v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                   <button  type="button" class="btn btn-success" @click="goLive">Go Live</button>
               </div>
-              <div style="background-color: white; color: #5468ff;border: 2px solid #5468ff;" class="alert alert-warning" role="alert" v-if="usernameExists || usernameTaken">
-          {{ usernameExists ? 'Username already taken! Use another username.' : 'Username is already taken! Use another username.' }}
-        </div>
+              
       </div>
     </div>
 </template>
@@ -25,15 +23,23 @@ export default {
   data() {
     return {
       username: "",
+      currentUser: "", // Ajoutez cette ligne pour stocker le nom de l'utilisateur
       usernameExists: false, // New data property to track if the username already exists
       usernameTaken: false,
-      currentUser: "" // Ajoutez cette ligne pour stocker le nom de l'utilisateur
     };
+  },
+  created() {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      this.username = user.username;
+      console.log("Ingelogde gebruiker:", this.username);
+    }
   },
   methods: {
     goLive() {
       const username = this.username;
       if (username.trim() !== "") {
+        const username = this.username;
         this.currentUser = username;
         sessionStorage.setItem('currentUser', username);
         socket.emit("check username", username, (exists) => {
@@ -46,11 +52,18 @@ export default {
           } else {
             this.usernameExists = true;
             this.usernameTaken = false; // Réinitialiser le drapeau usernameTaken
+            this.$router.push('/login');
+            sessionStorage.removeItem("user");
+        sessionStorage.removeItem("sessionInfo");
+        sessionStorage.removeItem("currentUser");
           }
         });
       }
+        socket.emit("user live", username);
+        this.$router.push('/liveUsers');
     },
-  }
+  },
+
 };
 </script>
 

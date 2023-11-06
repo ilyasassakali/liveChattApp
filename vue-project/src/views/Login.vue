@@ -46,10 +46,11 @@ export default {
         if (response.status === 200) {
           this.$router.push("/");
           const user = response.data.user;
-          console.log("Ingelogde gebruiker:", user);
+          //console.log("Ingelogde gebruiker:", user);
           sessionStorage.setItem("user", JSON.stringify(user));
 
-          //const sessionInfo = await axios.get("http://localhost:3000/get-session");
+          const sessionInfo = await axios.get("http://localhost:3000/get-session");
+          sessionStorage.setItem("sessionInfo", JSON.stringify(sessionInfo));
           //console.log("Sessie-informatie:", sessionInfo.data);
         }
       } catch (error) {

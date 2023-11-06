@@ -39,6 +39,16 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const user = JSON.parse(sessionStorage.getItem("user"));
+    const sessionInfo = JSON.parse(sessionStorage.getItem("sessionInfo"));
+    if (sessionInfo) {
+      const expires = new Date(sessionInfo.data.cookie.expires);
+      const now = new Date();
+      if (now > expires) {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("sessionInfo");
+        sessionStorage.removeItem("currentUser");
+      }
+    }
 
     if (!user) {
       next({ path: "/login" });
