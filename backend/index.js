@@ -14,6 +14,7 @@ const numCPUs = os.cpus().length;
 const cluster = require("node:cluster");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 const mongoose = require("mongoose");
+const User = require("./models/User");
 const authRoutes = require("./authRoutes"); // Importez les routes d'authentification
 app.use(express.json());
 app.use(flash());
@@ -23,7 +24,32 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(console.log("Connected to MongoDB"))
+  .then(async () => {
+    console.log("Connected to MongoDB");
+
+    const existingAdmin = await User.findOne({ isAdmin: true });
+
+    if (!existingAdmin) {
+      // Voeg de admin toe
+      const adminUsername = process.env.ADMIN_USERNAME;
+      const adminPassword = process.env.ADMIN_PASSWORD;
+
+      const admin = new User({
+        username: adminUsername,
+        password: adminPassword,
+        isAdmin: true,
+      });
+
+      try {
+        const savedAdmin = await admin.save();
+        console.log("Admin created:", savedAdmin);
+      } catch (err) {
+        console.error("Error creating admin:", err);
+      }
+    } else {
+      console.log("Admin already exists.");
+    }
+  })
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
 app.get("/", (req, res) => {

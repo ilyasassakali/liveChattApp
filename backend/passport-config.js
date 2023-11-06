@@ -6,10 +6,23 @@ const User = require("./models/User"); // Importez le modèle User
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const user = await User.findOne({ username });
+      let user;
+
+      if (username === process.env.ADMIN_USERNAME) {
+        // Als het de admin-gebruiker is, zoek deze op basis van de isAdmin-vlag
+        user = await User.findOne({ isAdmin: true });
+      } else {
+        // Anders, zoek op gebruikersnaam zoals eerder
+        user = await User.findOne({ username });
+      }
 
       if (!user) {
         return done(null, false, { message: "Incorrect username." });
+      }
+
+      if (username === process.env.ADMIN_USERNAME) {
+        // Als het de admin-gebruiker is, vergelijk zonder wachtwoord
+        return done(null, user);
       }
 
       const isMatch = await bcrypt.compare(password, user.password);

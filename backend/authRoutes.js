@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
+    console.log("lololo: ", user);
     if (err) {
       return next(err);
     }
@@ -19,6 +20,7 @@ router.post("/login", (req, res, next) => {
         return next(err);
       }
       console.log("User logged in:", user);
+
       return res.json({ success: "true", user });
     });
   })(req, res, next);
@@ -46,7 +48,6 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Register error" }); // Envoyer un message d'erreur au format JSON
   }
 });
-
 
 router.get("/get-session", (req, res) => {
   res.json(req.session);
