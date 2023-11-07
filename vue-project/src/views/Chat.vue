@@ -21,7 +21,7 @@
         <input v-model="text" v-on:keyup.enter="sendMessage" type="text" class="form-control" placeholder="Write here a message">
         <button @click="sendMessage" class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
     </div>
- 
+
   </div>
 </template>
 

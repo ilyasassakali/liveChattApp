@@ -6,12 +6,12 @@
                 <h1>LiveConnectRooms</h1>
               </div>
               <p>Go live to create or join a Room and chat with people!</p>
-        <div class="input-group mb-3">
+              <div class="input-group mb-3">
                   <input readonly v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                   <button  type="button" class="btn btn-success" @click="goLive">Go Live</button>
-              </div>
-              
+              </div>    
       </div>
+        <img @click="logout" class="logout-button" src="../images/logout.png">
     </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
         const username = this.username;
         this.currentUser = username;
         sessionStorage.setItem('currentUser', username);
-        socket.emit("check username", username, (exists) => {
+        /*socket.emit("check username", username, (exists) => {
 
           if (!exists) {
             this.usernameExists = false;
@@ -57,11 +57,18 @@ export default {
         sessionStorage.removeItem("sessionInfo");
         sessionStorage.removeItem("currentUser");
           }
-        });
+        });*/
       }
         socket.emit("user live", username);
         this.$router.push('/liveUsers');
     },
+    logout(){
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("sessionInfo");
+      sessionStorage.removeItem("currentUser");
+      this.$router.push("/login");
+      location.reload();
+    }
   },
 
 };
@@ -117,6 +124,25 @@ button:hover{
   100% {
     opacity: 1; /* Show the element at the end */
   }
+}
+
+
+.logout-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  border: none;
+  cursor: pointer;
+  background-color: #5468ff;
+  
+  padding: 5px;
+  border-radius: 5px;
+}
+
+
+.logout-button:hover {
+  background-color: #2942ff;
 }
 
 </style>

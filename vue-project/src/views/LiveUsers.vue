@@ -27,10 +27,8 @@
             <button class="btn btn-primary" @click="joinRoom(room.name)">{{ isUserInRoom(room.name) ? 'Joined Room' : 'Join Room' }}</button>
           </div>
         </div>
-
       </div>
-    
-
+      <img @click="logout" class="logout-button" src="../images/logout.png">
     </div>
   </template>
   
@@ -90,7 +88,13 @@ export default {
     isUserInRoom(roomName) {
     const username = this.currentUser;
     return this.getLiveUsersByRoom(roomName).some(user => user.username === username);
-  }
+  },logout(){
+      sessionStorage.removeItem("user");
+      sessionStorage.removeItem("sessionInfo");
+      sessionStorage.removeItem("currentUser");
+      this.$router.push("/login");
+      location.reload();
+    }
   },
 };
   </script>
@@ -144,5 +148,25 @@ button:hover{
 @keyframes spin {
   20% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
 }
+
+
+.logout-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  border: none;
+  cursor: pointer;
+  background-color: #5468ff;
+  
+  padding: 5px;
+  border-radius: 5px;
+}
+
+
+.logout-button:hover {
+  background-color: #2942ff;
+}
+
   </style>
   
