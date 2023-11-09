@@ -28,6 +28,8 @@
 <script>
 
 import io from "socket.io-client";
+const socket = io(import.meta.env.VITE_SOCKET_URL);
+
 
 export default {
   data() {
@@ -36,7 +38,7 @@ export default {
       text: "",
       messages: [],
       roomName: this.$route.params.roomName,
-      socketInstance: null,
+      socketInstance: socket,
       liveUsers: [],
       liveUsersInRoom: [] 
     };
@@ -51,6 +53,11 @@ export default {
     this.join(); 
     this.getLiveUsers(); // Call this method to get live users
 
+    socket.on("room deleted", (deletedRoomName) => {
+      if (deletedRoomName === this.roomName) {
+        this.$router.push("/liveUsers"); // Redirect naar de liveUsers pagina
+      }
+    });
   },
   methods: {
     join() {

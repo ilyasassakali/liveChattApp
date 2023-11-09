@@ -118,7 +118,7 @@ async function main() {
       socket.join(roomName);
     });
 
-    /*users logic*/
+    /*users/rooms logic*/
 
     socket.on("check username", (username, callback) => {
       const usernameExists = liveUsers.some(
@@ -165,7 +165,10 @@ async function main() {
         liveRooms.splice(roomIndex, 1);
 
         // Stuur een update naar alle clients
+        io.emit("update live users", liveUsers);
         io.emit("update live rooms", liveRooms);
+
+        io.emit("room deleted", roomName);
       }
     });
 
@@ -185,7 +188,7 @@ async function main() {
           io.emit("update live users", liveUsers);
         }
       }
-      
+
       io.emit("update live users", liveUsers);
       io.emit("update live rooms", liveRooms);
     });

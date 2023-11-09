@@ -20,8 +20,11 @@ passport.use(
         return done(null, false, { message: "Incorrect username." });
       }
 
-      if (username === process.env.ADMIN_USERNAME) {
-        // Als het de admin-gebruiker is, vergelijk zonder wachtwoord
+      if (
+        username === process.env.ADMIN_USERNAME &&
+        password === process.env.ADMIN_PASSWORD
+      ) {
+        // Als het de admin-gebruiker is, vergelijk zonder bcrypt
         return done(null, user);
       }
 
