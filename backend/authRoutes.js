@@ -53,4 +53,25 @@ router.get("/get-session", (req, res) => {
   res.json(req.session);
 });
 
+router.get("/get-all-users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching users" });
+  }
+});
+
+router.delete("/delete-user/:id", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting user" });
+  }
+});
+
 module.exports = router;

@@ -5,12 +5,20 @@
                 <div class="live-users-indicator"></div>
                 <h1>LiveConnectRooms</h1>
               </div>
-              <p>Go live to create or join a Room and chat with people!</p>
+
+              <p v-if="isAdmin">
+                Go live to create/delete, join a Room and chat with people!
+              </p>
+              <p v-else>
+                Go live to create or join a Room and chat with people!
+              </p>
+              
               <div class="input-group mb-3">
                   <input readonly v-model="username" type="text" @keyup.enter="goLive"  class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                   <button  type="button" class="btn btn-success" @click="goLive">Go Live</button>
               </div>    
       </div>
+        <img v-if="isAdmin" @click="goUsersPage" class="users-button" src="../images/group.png">
         <img @click="logout" class="logout-button" src="../images/logout.png">
     </div>
 </template>
@@ -26,6 +34,7 @@ export default {
       currentUser: "", // Ajoutez cette ligne pour stocker le nom de l'utilisateur
       usernameExists: false, // New data property to track if the username already exists
       usernameTaken: false,
+      isAdmin: false,
     };
   },
   created() {
@@ -33,6 +42,7 @@ export default {
     if (user) {
       this.username = user.username;
       console.log("Ingelogde gebruiker:", this.username);
+      this.isAdmin = user.isAdmin; 
     }
   },
   methods: {
@@ -68,6 +78,9 @@ export default {
       sessionStorage.removeItem("currentUser");
       this.$router.push("/login");
       location.reload();
+    },
+    goUsersPage(){
+      this.$router.push('/usersList');
     }
   },
 
@@ -135,14 +148,27 @@ button:hover{
   border: none;
   cursor: pointer;
   background-color: #5468ff;
-  
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.users-button{
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+  width: 50px;
+  border: none;
+  cursor: pointer;
+  background-color: #5468ff;
   padding: 5px;
   border-radius: 5px;
 }
 
 
-.logout-button:hover {
+.logout-button:hover,.users-button:hover {
   background-color: #2942ff;
 }
+
+
 
 </style>

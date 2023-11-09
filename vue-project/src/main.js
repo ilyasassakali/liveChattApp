@@ -8,6 +8,7 @@ import axios from "axios";
 import LiveUsers from "./views/LiveUsers.vue";
 import Home from "./views/Home.vue";
 import Chat from "./views/Chat.vue";
+import UsersList from "./views/UsersList.vue";
 
 import Register from "./views/Register.vue";
 import Login from "./views/Login.vue";
@@ -27,6 +28,7 @@ const routes = [
     component: Chat,
     meta: { requiresAuth: true },
   },
+  { path: "/usersList", component: UsersList, meta: { requiresAuth: true } },
   { path: "/register", component: Register },
   { path: "/login", component: Login },
 ];
