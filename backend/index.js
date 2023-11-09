@@ -158,6 +158,21 @@ async function main() {
       }
     });
 
+    socket.on("delete room", (roomName) => {
+      const roomIndex = liveRooms.findIndex((room) => room.name === roomName);
+      if (roomIndex !== -1) {
+        // Verwijder de kamer uit liveRooms
+        liveRooms.splice(roomIndex, 1);
+
+        // Stuur een update naar alle clients
+        io.emit("update live rooms", liveRooms);
+      }
+    });
+
+    socket.on("leave room", (roomName, username) => {
+      socket.to(roomName).emit("user left", username);
+    });
+
     socket.on("disconnect", () => {
       const disconnectedUser = socket.username;
       const room = socket.room;
@@ -170,6 +185,7 @@ async function main() {
           io.emit("update live users", liveUsers);
         }
       }
+      
       io.emit("update live users", liveUsers);
       io.emit("update live rooms", liveRooms);
     });

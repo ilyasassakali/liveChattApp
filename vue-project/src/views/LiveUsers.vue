@@ -25,6 +25,7 @@
                 <li v-for="(user, index) in getLiveUsersByRoom(room.name)" :key="index" class="list-group-item">{{ user.username }}</li>
               </ul>
             <button class="btn btn-primary" @click="joinRoom(room.name)">{{ isUserInRoom(room.name) ? 'Joined Room' : 'Join Room' }}</button>
+            <button v-if="isAdmin" style="background-color: #dc3545;margin-left: 10px;" class="btn btn-danger" @click="deleteRoom(room.name)">Delete Room</button>
           </div>
         </div>
       </div>
@@ -40,10 +41,18 @@ export default {
   data() {
     return {
       liveUsers: [], // Voeg liveUsers toe
-      currentUser: sessionStorage.getItem('currentUser') || '', // Ajouter cette ligne pour récupérer le nom d'utilisateur
+      currentUser: sessionStorage.getItem('currentUser') || '', 
       newRoomName: '',
       liveRooms: [],
+      isAdmin: false,
     };
+  },
+  created(){
+    const user = JSON.parse(sessionStorage.getItem("user"));
+  if (user) {
+    this.username = user.username;
+    this.isAdmin = user.isAdmin; 
+  }
   },
   mounted() {
     // Request the list of live users when the component mounts
@@ -88,13 +97,25 @@ export default {
     isUserInRoom(roomName) {
     const username = this.currentUser;
     return this.getLiveUsersByRoom(roomName).some(user => user.username === username);
-  },logout(){
-      sessionStorage.removeItem("user");
-      sessionStorage.removeItem("sessionInfo");
-      sessionStorage.removeItem("currentUser");
-      this.$router.push("/login");
-      location.reload();
     }
+    ,logout(){
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("sessionInfo");
+        sessionStorage.removeItem("currentUser");
+        this.$router.push("/login");
+        location.reload();
+    }
+    ,deleteRoom(roomName) {
+      const confirmed = window.confirm("You are sure you wanna delete this room?");
+      if (confirmed) {
+        // Verwijder de kamer uit liveRooms
+        this.liveRooms = this.liveRooms.filter(room => room.name !== roomName);
+
+        // Stuur een signaal naar de server om de kamer te verwijderen
+        socket.emit("delete room", roomName);
+
+      }
+    },
   },
 };
   </script>
