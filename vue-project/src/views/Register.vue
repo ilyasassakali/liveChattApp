@@ -49,7 +49,7 @@ export default {
           this.errorMessage = "Passwords do not match.";
           return;
         }
-        const response = await axios.post("https://livechatbackend.onrender.com/register", {
+        const response = await axios.post(import.meta.env.VITE_SOCKET_URL+"register", {
           username: this.username,
           password: this.password,
         });

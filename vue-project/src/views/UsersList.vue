@@ -50,7 +50,7 @@ export default {
   methods: {
     async fetchUsers() {
     try {
-      const response = await axios.get('https://livechatbackend.onrender.com/get-all-users'); 
+      const response = await axios.get(import.meta.env.VITE_SOCKET_URL+'get-all-users'); 
       this.users = response.data; 
     } catch (error) {
      // console.error(error);
@@ -65,7 +65,7 @@ export default {
     },
     async deleteUser(userId) {
       try {
-        await axios.delete(`https://livechatbackend.onrender.com/delete-user/${userId}`);
+        await axios.delete(import.meta.env.VITE_SOCKET_URL+`delete-user/${userId}`);
         this.fetchUsers(); // Mettez à jour la liste des utilisateurs après la suppression
       } catch (error) {
         //console.error(error);
