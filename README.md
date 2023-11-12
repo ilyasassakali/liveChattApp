@@ -11,6 +11,13 @@ This platform facilitates real-time conversations, allowing users to engage with
 - npm package for cors policy -> https://www.npmjs.com/package/cors
 - npm package for auto server reload -> https://www.npmjs.com/package/nodemon
 - render.com for hosting web service and static page -> https://render.com/
+  
+- LoginSystem with authentication:
+- Passportjs for authentication with username and password -> https://www.passportjs.org/packages/passport-local/
+- bcrypt.js for Safely Store A Password by hash -> https://www.npmjs.com/package/bcrypt
+- express-session for cookie and session -> https://www.npmjs.com/package/express-session
+- MongoDB Compass for saving users an delete users -> https://www.mongodb.com/docs/compass/current/
+- Mongoose for connecting to Database -> https://mongoosejs.com/
 
 ## Used Technologies
 - VueJS 3
@@ -18,3 +25,4 @@ This platform facilitates real-time conversations, allowing users to engage with
 - Expressjs
 - Socket.io
 - Render.com
+- MongoDB
