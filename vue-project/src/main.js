@@ -28,7 +28,19 @@ const routes = [
     component: Chat,
     meta: { requiresAuth: true },
   },
-  { path: "/usersList", component: UsersList, meta: { requiresAuth: true } },
+  {
+    path: "/usersList",
+    component: UsersList,
+    meta: { requiresAuth: true, requiresAdmin: true },
+    beforeEnter: (to, from, next) => {
+      const user = JSON.parse(sessionStorage.getItem("user"));
+      if (user && user.isAdmin) {
+        next();
+      } else {
+        next({ path: "/" });
+      }
+    },
+  },
   { path: "/register", component: Register },
   { path: "/login", component: Login },
 ];

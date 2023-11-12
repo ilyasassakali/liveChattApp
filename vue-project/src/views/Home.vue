@@ -6,8 +6,10 @@
                 <h1>LiveConnectRooms</h1>
               </div>
 
-              <p v-if="isAdmin">
+              <p v-if="isAdmin">               
                 Go live to create/delete, join a Room and chat with people!
+                <br>
+                Admin Rights active         
               </p>
               <p v-else>
                 Go live to create or join a Room and chat with people!
@@ -41,7 +43,7 @@ export default {
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user) {
       this.username = user.username;
-      console.log("Ingelogde gebruiker:", this.username);
+      //console.log("Ingelogde gebruiker:", this.username);
       this.isAdmin = user.isAdmin; 
     }
   },

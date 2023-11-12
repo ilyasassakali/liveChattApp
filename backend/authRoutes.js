@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log("lololo: ", user);
+    //console.log("lololo: ", user);
     if (err) {
       return next(err);
     }
@@ -19,7 +19,7 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      console.log("User logged in:", user);
+      //console.log("User logged in:", user);
 
       return res.json({ success: "true", user });
     });
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
     await user.save();
     res.json({ message: "Register succes" }); // Envoyer un message de succès au format JSON
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     res.status(500).json({ message: "Register error" }); // Envoyer un message d'erreur au format JSON
   }
 });
@@ -58,7 +58,7 @@ router.get("/get-all-users", async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     res.status(500).json({ message: "Error fetching users" });
   }
 });
@@ -69,7 +69,7 @@ router.delete("/delete-user/:id", async (req, res) => {
     await User.findByIdAndDelete(userId);
     res.json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error(error);
+   // console.error(error);
     res.status(500).json({ message: "Error deleting user" });
   }
 });

@@ -39,7 +39,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
-        const response = await axios.post("http://localhost:3000/login", {
+        const response = await axios.post("https://livechatbackend.onrender.com/login", {
           username: this.username,
           password: this.password
         });
@@ -49,13 +49,13 @@ export default {
           //console.log("Ingelogde gebruiker:", user);
           sessionStorage.setItem("user", JSON.stringify(user));
 
-          const sessionInfo = await axios.get("http://localhost:3000/get-session");
+          const sessionInfo = await axios.get("https://livechatbackend.onrender.com/get-session");
           sessionStorage.setItem("sessionInfo", JSON.stringify(sessionInfo));
           //console.log("Sessie-informatie:", sessionInfo.data);
         }
       } catch (error) {
         this.showErrorMessage = true; 
-        console.log(error);
+        //console.log(error);
       }
     }
   }

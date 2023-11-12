@@ -25,7 +25,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(async () => {
-    console.log("Connected to MongoDB");
+    //console.log("Connected to MongoDB");
 
     const existingAdmin = await User.findOne({ isAdmin: true });
 
@@ -42,12 +42,12 @@ mongoose
 
       try {
         const savedAdmin = await admin.save();
-        console.log("Admin created:", savedAdmin);
+        //console.log("Admin created:", savedAdmin);
       } catch (err) {
-        console.error("Error creating admin:", err);
+        //console.error("Error creating admin:", err);
       }
     } else {
-      console.log("Admin already exists.");
+      //console.log("Admin already exists.");
     }
   })
   .catch((err) => console.error("Error connecting to MongoDB:", err));

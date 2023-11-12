@@ -2,7 +2,7 @@
     <div class="center-content">
       <div class="home-content">
         <h2>Delete Users</h2>
-        <table class="table table-bordered table-striped">
+        <table class="table">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -42,7 +42,7 @@ export default {
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user) {
       this.username = user.username;
-      console.log("Ingelogde gebruiker:", this.username);
+      //.log("Ingelogde gebruiker:", this.username);
       this.isAdmin = user.isAdmin; 
     }
     this.fetchUsers();
@@ -50,10 +50,10 @@ export default {
   methods: {
     async fetchUsers() {
     try {
-      const response = await axios.get('http://localhost:3000/get-all-users'); 
+      const response = await axios.get('https://livechatbackend.onrender.com/get-all-users'); 
       this.users = response.data; 
     } catch (error) {
-      console.error(error);
+     // console.error(error);
     }
     },
     logout(){
@@ -65,10 +65,10 @@ export default {
     },
     async deleteUser(userId) {
       try {
-        await axios.delete(`http://localhost:3000/delete-user/${userId}`);
+        await axios.delete(`https://livechatbackend.onrender.com/delete-user/${userId}`);
         this.fetchUsers(); // Mettez à jour la liste des utilisateurs après la suppression
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
     }
   },
@@ -78,7 +78,20 @@ export default {
 
 <style scoped>
 
+tr:nth-child(odd) {
+    background-color: transparent;
+    color: white;
+    }
 
+   tr:nth-child(even) {
+    background-color: transparent;
+    color: white;
+    }
+
+    th,td {
+       background-color: transparent;
+       color: white;
+    }
 
 
 .logout-button {
